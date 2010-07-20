@@ -43,15 +43,24 @@ class GLYCAN < KEGGDB
   end
 
   # NAME
+  def names
+    field_fetch('NAME').split(/\s*;\s*/)
+  end
+
+  # The first name recorded in the NAME field.
   def name
-    field_fetch('NAME') 
+    names.first
   end
 
   # COMPOSITION
   def composition
+    fetch('COMPOSITION')
+  end
+
+  def composition_as_hash
     unless @data['COMPOSITION']
       hash = Hash.new(0)
-      fetch('COMPOSITION').scan(/\((\S+)\)(\d+)/).each do |key, val|
+      composition.scan(/\((\S+)\)(\d+)/).each do |key, val|
         hash[key] = val.to_i
       end
       @data['COMPOSITION'] = hash
